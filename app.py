@@ -4,44 +4,68 @@ import librosa.display
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
+import matplotlib
 import os
 
-st.set_page_config(page_title="Voice Cloning Detector", page_icon="🎙️", layout="centered")
+matplotlib.rcParams.update({
+    'figure.facecolor': '#0e1117',
+    'axes.facecolor': '#0e1117',
+    'axes.edgecolor': '#888',
+    'axes.labelcolor': '#eee',
+    'text.color': '#eee',
+    'xtick.color': '#aaa',
+    'ytick.color': '#aaa',
+})
 
-# --- Custom styling ---
+st.set_page_config(page_title="Voice Cloning Detector", page_icon="🎙️", layout="wide")
+
 st.markdown("""
     <style>
-    .main {
-        background-color: #f8f9fb;
-    }
-    h1 {
-        color: #2c2c54;
+    .stApp { background-color: #0e1117; color: #eee; }
+    h1, h2, h3, p, span, label { color: #eee !important; }
+    .metric-card {
+        background-color: #1c1f26;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid #2c2f36;
     }
     .stButton>button {
         background-color: #6C63FF;
         color: white;
         border-radius: 10px;
-        padding: 0.5em 1.5em;
+        padding: 0.6em 1.5em;
         border: none;
         font-weight: 600;
+        width: 100%;
     }
-    .stButton>button:hover {
-        background-color: #5a52e0;
-    }
+    .stButton>button:hover { background-color: #5a52e0; }
     div[data-testid="stFileUploader"] {
         border: 2px dashed #6C63FF;
         border-radius: 10px;
         padding: 1em;
+        background-color: #1c1f26;
     }
+    hr { border-color: #2c2f36; }
     </style>
 """, unsafe_allow_html=True)
 
 model = joblib.load('voice_cloning_model.pkl')
 
 # --- Header ---
-st.markdown("<h1 style='text-align: center;'>🎙️ AI Voice Cloning Detector</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: gray;'>Detect whether a voice is Real or AI-Cloned in seconds</p>", unsafe_allow_html=True)
-st.write("")
+st.markdown("<h1 style='text-align:center;'>🎙️ AI Voice Cloning Detector</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#999;'>Real-time detection of AI-generated (cloned) voices vs real human speech</p>", unsafe_allow_html=True)
+
+# --- Top stat cards ---
+c1, c2, c3 = st.columns(3)
+with c1:
+    st.markdown('<div class="metric-card"><h3>90%</h3><p>Model Accuracy</p></div>', unsafe_allow_html=True)
+with c2:
+    st.markdown('<div class="metric-card"><h3>5,160</h3><p>Training Samples</p></div>', unsafe_allow_html=True)
+with c3:
+    st.markdown('<div class="metric-card"><h3>13</h3><p>MFCC Features Used</p></div>', unsafe_allow_html=True)
+
+st.markdown("---")
 
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -49,7 +73,7 @@ if "history" not in st.session_state:
 def show_spectrogram(audio, sr, title):
     fig, ax = plt.subplots(figsize=(6, 2.5))
     D = librosa.amplitude_to_db(np.abs(librosa.stft(audio)), ref=np.max)
-    img = librosa.display.specshow(D, sr=sr, x_axis='time', y_axis='hz', ax=ax)
+    img = librosa.display.specshow(D, sr=sr, x_axis='time', y_axis='hz', ax=ax, cmap='magma')
     ax.set_title(title, fontsize=10)
     fig.colorbar(img, ax=ax, format="%+2.0f dB")
     st.pyplot(fig)
@@ -114,43 +138,45 @@ def predict_audio(load_path, display_name, show_audio=True):
     except Exception as e:
         st.error(f"❌ {display_name}: Error processing audio file. ({str(e)})")
 
-st.markdown("---")
-st.subheader("🔊 Try Sample Audio")
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("Test Sample: Real Voice", use_container_width=True):
-        predict_audio("sample_real.flac", "sample_real.flac")
-with col2:
-    if st.button("Test Sample: AI-Cloned Voice", use_container_width=True):
-        predict_audio("sample_fake.flac", "sample_fake.flac")
+# --- Sections in tabs (dashboard feel) ---
+tab1, tab2, tab3 = st.tabs(["🔊 Sample Test", "🎤 Live Record", "📤 Upload Audio"])
 
-st.markdown("---")
-st.subheader("🎤 Record Your Voice")
-mic_input = st.audio_input("Record using your microphone")
-if mic_input is not None:
-    with open("temp_mic.wav", "wb") as f:
-        f.write(mic_input.getbuffer())
-    predict_audio("temp_mic.wav", "Mic Recording", show_audio=True)
+with tab1:
+    st.subheader("Try with sample audio")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Test Sample: Real Voice"):
+            predict_audio("sample_real.flac", "sample_real.flac")
+    with col2:
+        if st.button("Test Sample: AI-Cloned Voice"):
+            predict_audio("sample_fake.flac", "sample_fake.flac")
 
-st.markdown("---")
-st.subheader("📤 Upload Your Own Audio")
-uploaded_files = st.file_uploader("Upload audio file(s) (.flac, .wav)",
-                                    type=['flac', 'wav'],
-                                    accept_multiple_files=True)
+with tab2:
+    st.subheader("Record your voice")
+    mic_input = st.audio_input("Record using your microphone")
+    if mic_input is not None:
+        with open("temp_mic.wav", "wb") as f:
+            f.write(mic_input.getbuffer())
+        predict_audio("temp_mic.wav", "Mic Recording", show_audio=True)
 
-if uploaded_files:
-    single_mode = len(uploaded_files) == 1
-    for uploaded_file in uploaded_files:
-        temp_input = f"temp_{uploaded_file.name}"
-        with open(temp_input, "wb") as f:
-            f.write(uploaded_file.getbuffer())
-        load_path = temp_input
-        if single_mode:
-            predict_audio(load_path, uploaded_file.name, show_audio=True)
-        else:
-            predict_audio(load_path, uploaded_file.name, show_audio=False)
-    if not single_mode:
-        st.success(f"Processed {len(uploaded_files)} files — see results below in history table.")
+with tab3:
+    st.subheader("Upload your own audio")
+    uploaded_files = st.file_uploader("Upload audio file(s) (.flac, .wav)",
+                                        type=['flac', 'wav'],
+                                        accept_multiple_files=True)
+    if uploaded_files:
+        single_mode = len(uploaded_files) == 1
+        for uploaded_file in uploaded_files:
+            temp_input = f"temp_{uploaded_file.name}"
+            with open(temp_input, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            load_path = temp_input
+            if single_mode:
+                predict_audio(load_path, uploaded_file.name, show_audio=True)
+            else:
+                predict_audio(load_path, uploaded_file.name, show_audio=False)
+        if not single_mode:
+            st.success(f"Processed {len(uploaded_files)} files — see history below.")
 
 if st.session_state.history:
     st.markdown("---")
