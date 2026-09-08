@@ -382,7 +382,7 @@ if "history" not in st.session_state:
 st.markdown("""
 <div class="hero">
 <div class="hero-icon">🎙️</div>
-<div class="hero-title">Voice <span>Shield</span></div>
+<div class="hero-title">AI Voice <span>Cloning Detector</span></div>
 <div class="hero-subtitle">AI voice cloning and impersonation risk detection</div>
 <div class="status-line">● DETECTION ENGINE ONLINE</div>
 </div>
