@@ -1,3 +1,4 @@
+%%writefile app.py
 import streamlit as st
 import librosa
 import librosa.display
@@ -8,97 +9,126 @@ import matplotlib
 import os
 
 matplotlib.rcParams.update({
-    'figure.facecolor': '#0e1117',
-    'axes.facecolor': '#0e1117',
-    'axes.edgecolor': '#888',
-    'axes.labelcolor': '#eee',
-    'text.color': '#eee',
-    'xtick.color': '#aaa',
-    'ytick.color': '#aaa',
+    'figure.facecolor': '#0f1115',
+    'axes.facecolor': '#0f1115',
+    'axes.edgecolor': '#3a3d45',
+    'axes.labelcolor': '#d1d5db',
+    'text.color': '#d1d5db',
+    'xtick.color': '#9ca3af',
+    'ytick.color': '#9ca3af',
 })
 
 st.set_page_config(page_title="Voice Cloning Detector", page_icon="🎙️", layout="wide")
 
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto+Mono&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    .stApp { 
-        background-color: #0e1117; 
-        color: #eee; 
-        font-family: 'Poppins', sans-serif;
-        font-size: 18px;
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
     }
-    h1 { 
-        color: #fff !important; 
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700 !important;
-        font-size: 42px !important;
+
+    .stApp {
+        background-color: #0f1115;
+        color: #e5e7eb;
     }
-    h2, h3 { 
-        color: #eee !important; 
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600 !important;
-    }
-    h3 { font-size: 26px !important; }
-    p, span, label, .stMarkdown { 
-        font-size: 18px !important; 
-        color: #ddd !important;
-    }
-    .metric-card {
-        background: linear-gradient(145deg, #1c1f26, #23262e);
-        border-radius: 16px;
-        padding: 28px;
+
+    /* Title */
+    .main-title {
         text-align: center;
-        border: 1px solid #33363e;
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 0.2rem;
+    }
+    .subtitle {
+        text-align: center;
+        font-size: 1rem;
+        color: #9ca3af;
+        margin-bottom: 2rem;
+        font-weight: 400;
+    }
+
+    /* Stat cards */
+    .metric-card {
+        background: #171a21;
+        border: 1px solid #262a33;
+        border-radius: 14px;
+        padding: 22px 10px;
+        text-align: center;
     }
     .metric-card h3 {
-        font-size: 34px !important;
-        color: #a29bfe !important;
-        margin-bottom: 6px;
-        font-family: 'Roboto Mono', monospace;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #818cf8;
+        margin: 0 0 4px 0;
     }
     .metric-card p {
-        font-size: 16px !important;
-        color: #999 !important;
+        font-size: 0.8rem;
+        color: #9ca3af;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.05em;
+        margin: 0;
+        font-weight: 500;
     }
+
+    /* Section headers */
+    h3 {
+        color: #f3f4f6 !important;
+        font-weight: 600 !important;
+        font-size: 1.15rem !important;
+    }
+
+    /* Body text */
+    p, span, label, .stMarkdown {
+        font-size: 0.95rem;
+        color: #d1d5db;
+    }
+
+    /* Buttons */
     .stButton>button {
-        background-color: #6C63FF;
+        background-color: #6366f1;
         color: white;
-        border-radius: 12px;
-        padding: 0.8em 1.5em;
+        border-radius: 10px;
+        padding: 0.6em 1.2em;
         border: none;
         font-weight: 600;
-        font-size: 18px;
+        font-size: 0.95rem;
         width: 100%;
+        transition: 0.2s;
     }
-    .stButton>button:hover { 
-        background-color: #5a52e0; 
-        transform: scale(1.02);
+    .stButton>button:hover {
+        background-color: #4f46e5;
     }
+
+    /* File uploader */
     div[data-testid="stFileUploader"] {
-        border: 2px dashed #6C63FF;
-        border-radius: 12px;
-        padding: 1.2em;
-        background-color: #1c1f26;
-        font-size: 17px;
+        border: 1.5px dashed #4b5563;
+        border-radius: 10px;
+        padding: 1em;
+        background-color: #171a21;
     }
+
+    /* Tabs */
     .stTabs [data-baseweb="tab"] {
-        font-size: 18px;
+        font-size: 0.95rem;
         font-weight: 600;
-        padding: 12px 20px;
+        padding: 10px 18px;
+        color: #9ca3af;
     }
-    hr { border-color: #2c2f36; }
+    .stTabs [aria-selected="true"] {
+        color: #818cf8 !important;
+    }
+
+    hr { border-color: #262a33; }
     </style>
 """, unsafe_allow_html=True)
 
 model = joblib.load('voice_cloning_model.pkl')
 
 # --- Header ---
-st.markdown("<h1 style='text-align:center;'>🎙️ AI Voice Cloning Detector</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center; color:#999;'>Real-time detection of AI-generated (cloned) voices vs real human speech</p>", unsafe_allow_html=True)
+st.markdown("<div class='main-title'>🎙️ AI Voice Cloning Detector</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>Real-time detection of AI-generated (cloned) voices vs real human speech</div>", unsafe_allow_html=True)
 
 # --- Top stat cards ---
 c1, c2, c3 = st.columns(3)
@@ -127,7 +157,7 @@ def show_feature_importance():
     importances = model.feature_importances_
     feature_names = [f"MFCC-{i+1}" for i in range(len(importances))]
     fig, ax = plt.subplots(figsize=(6, 3))
-    ax.bar(feature_names, importances, color="#6C63FF")
+    ax.bar(feature_names, importances, color="#6366f1")
     ax.set_title("Which MFCC features influenced this decision most", fontsize=10)
     plt.xticks(rotation=45, ha='right', fontsize=7)
     st.pyplot(fig)
@@ -182,7 +212,7 @@ def predict_audio(load_path, display_name, show_audio=True):
     except Exception as e:
         st.error(f"❌ {display_name}: Error processing audio file. ({str(e)})")
 
-# --- Sections in tabs (dashboard feel) ---
+# --- Sections in tabs ---
 tab1, tab2, tab3 = st.tabs(["🔊 Sample Test", "🎤 Live Record", "📤 Upload Audio"])
 
 with tab1:
