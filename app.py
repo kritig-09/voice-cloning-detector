@@ -21,30 +21,74 @@ st.set_page_config(page_title="Voice Cloning Detector", page_icon="🎙️", lay
 
 st.markdown("""
     <style>
-    .stApp { background-color: #0e1117; color: #eee; }
-    h1, h2, h3, p, span, label { color: #eee !important; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto+Mono&display=swap');
+
+    .stApp { 
+        background-color: #0e1117; 
+        color: #eee; 
+        font-family: 'Poppins', sans-serif;
+        font-size: 18px;
+    }
+    h1 { 
+        color: #fff !important; 
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700 !important;
+        font-size: 42px !important;
+    }
+    h2, h3 { 
+        color: #eee !important; 
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600 !important;
+    }
+    h3 { font-size: 26px !important; }
+    p, span, label, .stMarkdown { 
+        font-size: 18px !important; 
+        color: #ddd !important;
+    }
     .metric-card {
-        background-color: #1c1f26;
-        border-radius: 12px;
-        padding: 20px;
+        background: linear-gradient(145deg, #1c1f26, #23262e);
+        border-radius: 16px;
+        padding: 28px;
         text-align: center;
-        border: 1px solid #2c2f36;
+        border: 1px solid #33363e;
+    }
+    .metric-card h3 {
+        font-size: 34px !important;
+        color: #a29bfe !important;
+        margin-bottom: 6px;
+        font-family: 'Roboto Mono', monospace;
+    }
+    .metric-card p {
+        font-size: 16px !important;
+        color: #999 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     .stButton>button {
         background-color: #6C63FF;
         color: white;
-        border-radius: 10px;
-        padding: 0.6em 1.5em;
+        border-radius: 12px;
+        padding: 0.8em 1.5em;
         border: none;
         font-weight: 600;
+        font-size: 18px;
         width: 100%;
     }
-    .stButton>button:hover { background-color: #5a52e0; }
+    .stButton>button:hover { 
+        background-color: #5a52e0; 
+        transform: scale(1.02);
+    }
     div[data-testid="stFileUploader"] {
         border: 2px dashed #6C63FF;
-        border-radius: 10px;
-        padding: 1em;
+        border-radius: 12px;
+        padding: 1.2em;
         background-color: #1c1f26;
+        font-size: 17px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        font-size: 18px;
+        font-weight: 600;
+        padding: 12px 20px;
     }
     hr { border-color: #2c2f36; }
     </style>
