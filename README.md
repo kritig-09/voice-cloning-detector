@@ -2,7 +2,7 @@
 
 An AI-powered system for real-time detection of AI-generated (cloned) voices versus authentic human speech. The system uses acoustic feature extraction combined with a supervised machine learning classifier to distinguish genuine human speech from synthetically generated or manipulated audio. Developed as part of Smart India Hackathon 2026.
 
-**Live Application:** https://voice-cloning-detector-sih2026.streamlit.app/
+**Live Application:** https://voice-cloning-detector-sih-2026.streamlit.app/
 
 ---
 
@@ -39,10 +39,10 @@ The AI Voice Cloning Detector addresses this gap by providing an accessible web-
 **How it works:**
 
 1. **Audio Input** — The user provides an audio sample through one of three channels: uploading a file, recording live via microphone, or selecting a pre-loaded demo sample.
-2. **Preprocessing** — The audio is loaded and standardized (resampled to a fixed sampling rate) using `librosa`, and basic quality checks are performed (minimum duration, non-silence) to ensure the input is suitable for reliable analysis.
+2. **Preprocessing** — The audio is loaded and standardized (resampled to a fixed sampling rate) using `librosa`, and basic quality checks are performed (minimum duration, non-silence, signal strength) to ensure the input is suitable for reliable analysis.
 3. **Feature Extraction** — The system computes **Mel-Frequency Cepstral Coefficients (MFCCs)**, a set of 13 coefficients that capture the short-term power spectrum of the audio in a way that closely reflects human auditory perception. MFCCs are a standard and well-validated feature representation in speech processing tasks, including speaker verification and spoof detection.
 4. **Classification** — The extracted MFCC feature vector is passed into a **Random Forest classifier**, trained on the ASVspoof 2019 dataset, which outputs a binary prediction (Real / AI-Cloned) along with class probabilities.
-5. **Explainability & Visualization** — Alongside the prediction, the system generates a spectrogram of the input audio and a feature-importance chart showing which MFCC coefficients contributed most to the decision, making the system's reasoning transparent rather than a black box.
+5. **Explainability & Visualization** — Alongside the prediction, the system generates a waveform and spectrogram of the input audio, reports audio-level metrics (duration, sample rate, signal quality), and displays a feature-importance chart showing which MFCC coefficients contributed most to the decision — making the system's reasoning transparent rather than a black box.
 
 This approach was chosen over more complex deep-learning pipelines because MFCC + Random Forest offers a strong balance of accuracy, interpretability, low computational cost, and fast inference — making it practical to deploy as a free, publicly accessible web tool rather than requiring heavy GPU infrastructure.
 
@@ -53,11 +53,13 @@ This approach was chosen over more complex deep-learning pipelines because MFCC 
 - **Multi-file upload** — Upload one or several audio files (`.flac`, `.wav`) at once for batch analysis, with results consolidated into a results table.
 - **Live microphone recording** — Record audio directly in the browser and receive an instant prediction, enabling real-time, no-file-needed testing.
 - **Built-in demo samples** — Pre-loaded real and AI-cloned audio samples let evaluators test the system instantly without needing their own audio files.
-- **Confidence scoring** — Every prediction is accompanied by a probability-based confidence score, visualized with a progress indicator.
+- **Confidence scoring** — Every prediction is accompanied by a probability-based confidence score, visualized with a progress indicator, along with an associated impersonation-risk label.
+- **Waveform visualization** — Displays the time-domain waveform of the analyzed audio.
 - **Spectrogram visualization** — Displays the time-frequency representation of the analyzed audio for visual inspection.
+- **Audio-level metrics** — Reports duration, sample rate, and signal quality for every analyzed sample.
 - **Model explainability** — A feature-importance chart shows which MFCC coefficients most influenced a given classification, adding transparency to the model's decision-making.
 - **Input validation** — Automatically detects and warns against audio that is too short, silent, or of insufficient quality for reliable prediction, rather than returning a misleading result.
-- **Session-based history log** — Maintains a running table of all predictions made during a session, useful for comparing multiple test cases side by side.
+- **Session-based history log** — Maintains a running, clearable table of all predictions made during a session (including confidence, duration, and signal quality), useful for comparing multiple test cases side by side.
 
 ---
 
@@ -65,7 +67,7 @@ This approach was chosen over more complex deep-learning pipelines because MFCC 
 
 - **Application Framework:** Streamlit (Python-based web app framework, chosen for rapid deployment of ML-driven interfaces)
 - **Machine Learning:** Python, scikit-learn (Random Forest Classifier)
-- **Audio Processing:** librosa (audio loading, resampling, MFCC extraction, spectrogram generation)
+- **Audio Processing:** librosa (audio loading, resampling, MFCC extraction, waveform and spectrogram generation)
 - **Visualization:** Matplotlib
 - **Dataset:** ASVspoof 2019 (Logical Access) — an internationally recognized benchmark dataset for spoofed and synthetic speech detection, containing both bonafide (real) and spoofed (AI-generated/replayed) utterances
 - **Deployment:** Streamlit Community Cloud
@@ -80,10 +82,10 @@ Detailed architecture available in [docs/architecture.md](docs/architecture.md).
 User
   |
   v
-Streamlit Frontend (Upload / Live Record / Sample Test)
+Streamlit Frontend (Sample Test / Live Record / Upload Audio)
   |
   v
-Audio Preprocessing (librosa)
+Audio Preprocessing + Validation (librosa)
   |
   v
 MFCC Feature Extraction (13 coefficients)
@@ -95,7 +97,7 @@ Random Forest Model (voice_cloning_model.pkl)
 Prediction: Real Voice / AI-Cloned Voice + Confidence Score
   |
   v
-Explainability (Feature Importance) + Spectrogram Visualization
+Waveform + Spectrogram Visualization + MFCC Explainability + Session History
 ```
 
 ---
