@@ -6,10 +6,42 @@ import joblib
 import matplotlib.pyplot as plt
 import os
 
+st.set_page_config(page_title="Voice Cloning Detector", page_icon="🎙️", layout="centered")
+
+# --- Custom styling ---
+st.markdown("""
+    <style>
+    .main {
+        background-color: #f8f9fb;
+    }
+    h1 {
+        color: #2c2c54;
+    }
+    .stButton>button {
+        background-color: #6C63FF;
+        color: white;
+        border-radius: 10px;
+        padding: 0.5em 1.5em;
+        border: none;
+        font-weight: 600;
+    }
+    .stButton>button:hover {
+        background-color: #5a52e0;
+    }
+    div[data-testid="stFileUploader"] {
+        border: 2px dashed #6C63FF;
+        border-radius: 10px;
+        padding: 1em;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 model = joblib.load('voice_cloning_model.pkl')
 
-st.title("🎙️ AI Voice Cloning Detector")
-st.write("Upload an audio file to check if it's a Real human voice or an AI-Cloned voice")
+# --- Header ---
+st.markdown("<h1 style='text-align: center;'>🎙️ AI Voice Cloning Detector</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Detect whether a voice is Real or AI-Cloned in seconds</p>", unsafe_allow_html=True)
+st.write("")
 
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -27,7 +59,7 @@ def show_feature_importance():
     importances = model.feature_importances_
     feature_names = [f"MFCC-{i+1}" for i in range(len(importances))]
     fig, ax = plt.subplots(figsize=(6, 3))
-    ax.bar(feature_names, importances, color="teal")
+    ax.bar(feature_names, importances, color="#6C63FF")
     ax.set_title("Which MFCC features influenced this decision most", fontsize=10)
     plt.xticks(rotation=45, ha='right', fontsize=7)
     st.pyplot(fig)
@@ -60,13 +92,13 @@ def predict_audio(load_path, display_name, show_audio=True):
             result_label = "Real Voice"
             conf_value = confidence[1]*100
             if show_audio:
-                st.success(f"✅ Real Voice (Confidence: {conf_value:.1f}%)")
+                st.success(f"✅ Real Voice — Confidence: {conf_value:.1f}%")
                 st.progress(float(confidence[1]))
         else:
             result_label = "AI-Cloned Voice"
             conf_value = confidence[0]*100
             if show_audio:
-                st.error(f"⚠️ AI-Cloned Voice Detected (Confidence: {conf_value:.1f}%)")
+                st.error(f"⚠️ AI-Cloned Voice Detected — Confidence: {conf_value:.1f}%")
                 st.progress(float(confidence[0]))
 
         if show_audio:
@@ -82,56 +114,45 @@ def predict_audio(load_path, display_name, show_audio=True):
     except Exception as e:
         st.error(f"❌ {display_name}: Error processing audio file. ({str(e)})")
 
-# --- Demo section ---
+st.markdown("---")
 st.subheader("🔊 Try Sample Audio")
 col1, col2 = st.columns(2)
 with col1:
-    if st.button("Test Sample: Real Voice"):
+    if st.button("Test Sample: Real Voice", use_container_width=True):
         predict_audio("sample_real.flac", "sample_real.flac")
 with col2:
-    if st.button("Test Sample: AI-Cloned Voice"):
+    if st.button("Test Sample: AI-Cloned Voice", use_container_width=True):
         predict_audio("sample_fake.flac", "sample_fake.flac")
 
-st.divider()
-
-# --- Mic recording section ---
+st.markdown("---")
 st.subheader("🎤 Record Your Voice")
 mic_input = st.audio_input("Record using your microphone")
-
 if mic_input is not None:
     with open("temp_mic.wav", "wb") as f:
         f.write(mic_input.getbuffer())
     predict_audio("temp_mic.wav", "Mic Recording", show_audio=True)
 
-st.divider()
-
-# --- Upload section (multiple files) ---
-st.subheader("📤 Upload Your Own Audio (single or multiple files)")
-uploaded_files = st.file_uploader("Upload audio file(s) (.flac, .wav, .mp3)",
+st.markdown("---")
+st.subheader("📤 Upload Your Own Audio")
+uploaded_files = st.file_uploader("Upload audio file(s) (.flac, .wav)",
                                     type=['flac', 'wav'],
                                     accept_multiple_files=True)
 
 if uploaded_files:
     single_mode = len(uploaded_files) == 1
     for uploaded_file in uploaded_files:
-        file_ext = uploaded_file.name.split('.')[-1].lower()
         temp_input = f"temp_{uploaded_file.name}"
-
         with open(temp_input, "wb") as f:
             f.write(uploaded_file.getbuffer())
-
         load_path = temp_input
-
-
         if single_mode:
             predict_audio(load_path, uploaded_file.name, show_audio=True)
         else:
             predict_audio(load_path, uploaded_file.name, show_audio=False)
-
     if not single_mode:
         st.success(f"Processed {len(uploaded_files)} files — see results below in history table.")
 
-# --- History ---
 if st.session_state.history:
+    st.markdown("---")
     st.subheader("📜 Prediction History")
     st.table(st.session_state.history)
