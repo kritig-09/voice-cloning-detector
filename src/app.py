@@ -9,7 +9,7 @@ import tempfile
 
 
 # ============================================================
-# PAGE CONFIG
+# PAGE CONFIGURATION
 # ============================================================
 
 st.set_page_config(
@@ -21,208 +21,264 @@ st.set_page_config(
 
 
 # ============================================================
-# CUSTOM CSS
+# PROFESSIONAL DARK UI
 # ============================================================
 
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<style>
 
-    /* ---------- MAIN APP ---------- */
+/* ==========================================================
+   GLOBAL
+   ========================================================== */
 
-    .stApp {
-        background: #0b0d11;
-        color: #e5e7eb;
-    }
+.stApp {
+    background-color: #0b0d11;
+    color: #e5e7eb;
+}
 
-    .block-container {
-        max-width: 1250px;
-        padding-top: 2.5rem;
-        padding-bottom: 4rem;
-    }
-
-
-    /* ---------- HEADINGS ---------- */
-
-    h1 {
-        font-family: Arial, Helvetica, sans-serif !important;
-        font-size: 2.6rem !important;
-        font-weight: 750 !important;
-        letter-spacing: -0.04em !important;
-        color: #f8fafc !important;
-    }
-
-    h2 {
-        font-family: Arial, Helvetica, sans-serif !important;
-        font-weight: 700 !important;
-        color: #f8fafc !important;
-    }
-
-    h3 {
-        font-family: Arial, Helvetica, sans-serif !important;
-        font-weight: 650 !important;
-        color: #f1f5f9 !important;
-    }
-
-    p {
-        color: #a8afbd !important;
-    }
+.block-container {
+    max-width: 1180px;
+    padding-top: 2.5rem;
+    padding-bottom: 4rem;
+}
 
 
-    /* ---------- TOP TITLE ---------- */
+/* ==========================================================
+   TYPOGRAPHY
+   ========================================================== */
 
-    .app-subtitle {
-        color: #8f97a6;
-        font-size: 1.05rem;
-        margin-top: -12px;
-        margin-bottom: 28px;
-        letter-spacing: 0.01em;
-    }
+html, body, [class*="css"] {
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
 
+h1 {
+    font-size: 2.45rem !important;
+    font-weight: 750 !important;
+    letter-spacing: -0.035em !important;
+    color: #f5f7fa !important;
+    margin-bottom: 0.25rem !important;
+}
 
-    /* ---------- STATUS ---------- */
+h2 {
+    font-size: 1.45rem !important;
+    font-weight: 700 !important;
+    color: #f1f3f6 !important;
+}
 
-    .status-line {
-        display: inline-block;
-        padding: 7px 13px;
-        border: 1px solid #26352d;
-        border-radius: 999px;
-        background: #101713;
-        color: #8fd5a8;
-        font-size: 0.82rem;
-        font-weight: 600;
-        margin-bottom: 22px;
-    }
+h3 {
+    font-size: 1.08rem !important;
+    font-weight: 650 !important;
+    color: #e7eaf0 !important;
+}
 
-
-    /* ---------- METRIC CARDS ---------- */
-
-    [data-testid="stMetric"] {
-        background: #13161d;
-        border: 1px solid #272c36;
-        border-radius: 16px;
-        padding: 21px 24px;
-        min-height: 105px;
-    }
-
-    [data-testid="stMetric"]:hover {
-        border-color: #3a4050;
-    }
-
-    [data-testid="stMetricLabel"] {
-        color: #8f97a6 !important;
-        font-size: 0.78rem !important;
-        font-weight: 650 !important;
-        letter-spacing: 0.08em !important;
-    }
-
-    [data-testid="stMetricValue"] {
-        color: #f4f6fa !important;
-        font-size: 1.9rem !important;
-        font-weight: 750 !important;
-    }
+p {
+    color: #9ba3b2 !important;
+}
 
 
-    /* ---------- DIVIDERS ---------- */
+/* ==========================================================
+   SUBTITLE
+   ========================================================== */
 
-    hr {
-        border-color: #232832 !important;
-        margin-top: 28px !important;
-        margin-bottom: 28px !important;
-    }
-
-
-    /* ---------- TABS ---------- */
-
-    .stTabs [data-baseweb="tab-list"] {
-        background: #11141a;
-        border: 1px solid #242934;
-        border-radius: 12px;
-        padding: 4px;
-        gap: 3px;
-    }
-
-    .stTabs [data-baseweb="tab"] {
-        color: #9199a8 !important;
-        font-weight: 600 !important;
-        border-radius: 9px;
-        padding: 10px 20px;
-    }
-
-    .stTabs [aria-selected="true"] {
-        background: #1b1f28 !important;
-        color: #f5f7fb !important;
-    }
+.app-subtitle {
+    color: #8f97a6;
+    font-size: 1rem;
+    margin-bottom: 0.9rem;
+}
 
 
-    /* ---------- BUTTONS ---------- */
+/* ==========================================================
+   STATUS
+   ========================================================== */
 
-    .stButton > button {
-        width: 100%;
-        min-height: 46px;
-        border-radius: 10px;
-        background: #181c24;
-        border: 1px solid #343a47;
-        color: #f1f5f9;
-        font-size: 0.94rem;
-        font-weight: 600;
-        transition: all 0.15s ease;
-    }
-
-    .stButton > button:hover {
-        background: #202531;
-        border-color: #6366f1;
-        color: #ffffff;
-    }
+.status-text {
+    color: #7fcb9a;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+}
 
 
-    /* ---------- FILE UPLOADER ---------- */
+/* ==========================================================
+   TECHNICAL STAT STRIP
+   NO BOXES
+   ========================================================== */
 
-    [data-testid="stFileUploader"] {
-        background: #11141a;
-        border: 1px dashed #3b4250;
-        border-radius: 14px;
-        padding: 8px;
-    }
+[data-testid="stMetric"] {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0.2rem 1.4rem !important;
+    min-height: auto !important;
+}
 
+[data-testid="stMetricValue"] {
+    color: #eef1f5 !important;
+    font-size: 1.45rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
 
-    /* ---------- AUDIO ---------- */
-
-    audio {
-        width: 100%;
-        margin-top: 5px;
-        margin-bottom: 10px;
-    }
-
-
-    /* ---------- EXPANDERS ---------- */
-
-    [data-testid="stExpander"] {
-        background: #11141a;
-        border: 1px solid #272c36;
-        border-radius: 12px;
-    }
-
-
-    /* ---------- ALERTS ---------- */
-
-    [data-testid="stAlert"] {
-        border-radius: 12px;
-    }
+[data-testid="stMetricLabel"] {
+    color: #737c8c !important;
+    font-size: 0.72rem !important;
+    font-weight: 650 !important;
+    letter-spacing: 0.09em !important;
+}
 
 
-    /* ---------- TABLE ---------- */
+/* vertical separators between metrics */
 
-    [data-testid="stDataFrame"] {
-        border: 1px solid #272c36;
-        border-radius: 12px;
-        overflow: hidden;
-    }
+.metrics-divider {
+    border-left: 1px solid #292e38;
+    height: 48px;
+    margin-top: 4px;
+}
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+
+/* ==========================================================
+   DIVIDERS
+   ========================================================== */
+
+hr {
+    border-color: #252a33 !important;
+    margin-top: 1.8rem !important;
+    margin-bottom: 1.8rem !important;
+}
+
+
+/* ==========================================================
+   TABS
+   ========================================================== */
+
+.stTabs [data-baseweb="tab-list"] {
+    background-color: #101319;
+    border: 1px solid #252a33;
+    border-radius: 11px;
+    padding: 4px;
+    gap: 3px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    color: #858d9c !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px;
+    padding: 9px 18px;
+}
+
+.stTabs [aria-selected="true"] {
+    color: #f5f7fa !important;
+    background-color: #1b1f27 !important;
+}
+
+
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
+
+.stButton > button {
+    width: 100%;
+    min-height: 45px;
+    border-radius: 9px;
+    background-color: #151920;
+    color: #e9ecf1;
+    border: 1px solid #323844;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.15s ease;
+}
+
+.stButton > button:hover {
+    background-color: #1c212a;
+    border-color: #606878;
+    color: #ffffff;
+}
+
+
+/* ==========================================================
+   FILE UPLOADER
+   ========================================================== */
+
+[data-testid="stFileUploader"] {
+    background-color: #11141a;
+    border: 1px dashed #353b47;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+
+/* ==========================================================
+   AUDIO PLAYER
+   ========================================================== */
+
+audio {
+    width: 100%;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+
+/* ==========================================================
+   EXPANDERS
+   ========================================================== */
+
+[data-testid="stExpander"] {
+    background-color: #101319;
+    border: 1px solid #272c35;
+    border-radius: 10px;
+}
+
+[data-testid="stExpander"] summary {
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   ALERTS
+   ========================================================== */
+
+[data-testid="stAlert"] {
+    border-radius: 10px;
+}
+
+
+/* ==========================================================
+   DATAFRAME
+   ========================================================== */
+
+[data-testid="stDataFrame"] {
+    border: 1px solid #272c35;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+
+/* ==========================================================
+   CAPTIONS
+   ========================================================== */
+
+[data-testid="stCaptionContainer"] {
+    color: #737c8c !important;
+}
+
+
+/* ==========================================================
+   PROGRESS BAR
+   ========================================================== */
+
+.stProgress > div > div > div > div {
+    background-color: #6366f1;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
@@ -260,7 +316,7 @@ st.markdown(
 
 if model_loaded:
     st.markdown(
-        '<div class="status-line">● Detection engine online</div>',
+        '<div class="status-text">● Detection engine online</div>',
         unsafe_allow_html=True
     )
 else:
@@ -268,27 +324,41 @@ else:
 
 
 # ============================================================
-# TOP METRICS
+# TECHNICAL INFORMATION STRIP
 # ============================================================
 
-col1, col2, col3 = st.columns(3)
+m1, separator1, m2, separator2, m3 = st.columns(
+    [1, 0.05, 1, 0.05, 1]
+)
 
-with col1:
+with m1:
     st.metric(
-        label="MODEL ACCURACY",
-        value="90%"
+        "MODEL ACCURACY",
+        "90%"
     )
 
-with col2:
-    st.metric(
-        label="TRAINING SAMPLES",
-        value="5,160"
+with separator1:
+    st.markdown(
+        '<div class="metrics-divider"></div>',
+        unsafe_allow_html=True
     )
 
-with col3:
+with m2:
     st.metric(
-        label="MFCC FEATURES USED",
-        value="13"
+        "TRAINING SAMPLES",
+        "5,160"
+    )
+
+with separator2:
+    st.markdown(
+        '<div class="metrics-divider"></div>',
+        unsafe_allow_html=True
+    )
+
+with m3:
+    st.metric(
+        "MFCC FEATURES",
+        "13"
     )
 
 
@@ -302,7 +372,7 @@ st.divider()
 def show_spectrogram(audio, sr, filename):
 
     fig, ax = plt.subplots(
-        figsize=(9, 3.5)
+        figsize=(9, 3.4)
     )
 
     fig.patch.set_facecolor("#0b0d11")
@@ -324,23 +394,23 @@ def show_spectrogram(audio, sr, filename):
 
     ax.set_title(
         f"Spectrogram — {filename}",
-        color="#dce1e8",
-        fontsize=12,
+        color="#dfe3e9",
+        fontsize=11,
         pad=10
     )
 
     ax.set_xlabel(
         "Time",
-        color="#9ca3af"
+        color="#8f97a6"
     )
 
     ax.set_ylabel(
         "Frequency",
-        color="#9ca3af"
+        color="#8f97a6"
     )
 
     ax.tick_params(
-        colors="#9ca3af"
+        colors="#858d9c"
     )
 
     for spine in ax.spines.values():
@@ -353,7 +423,7 @@ def show_spectrogram(audio, sr, filename):
     )
 
     cbar.ax.tick_params(
-        colors="#9ca3af"
+        colors="#858d9c"
     )
 
     plt.tight_layout()
@@ -372,7 +442,10 @@ def show_spectrogram(audio, sr, filename):
 
 def show_feature_importance():
 
-    if not hasattr(model, "feature_importances_"):
+    if not hasattr(
+        model,
+        "feature_importances_"
+    ):
 
         st.info(
             "Feature importance is not available for this model."
@@ -388,7 +461,7 @@ def show_feature_importance():
     ]
 
     fig, ax = plt.subplots(
-        figsize=(9, 3.2)
+        figsize=(9, 3)
     )
 
     fig.patch.set_facecolor("#0b0d11")
@@ -401,25 +474,25 @@ def show_feature_importance():
 
     ax.set_title(
         "MFCC Feature Contribution",
-        color="#dce1e8",
-        fontsize=12,
+        color="#dfe3e9",
+        fontsize=11,
         pad=10
     )
 
     ax.set_ylabel(
         "Relative Importance",
-        color="#9ca3af"
+        color="#8f97a6"
     )
 
     ax.tick_params(
         axis="x",
-        colors="#9ca3af",
+        colors="#858d9c",
         rotation=35
     )
 
     ax.tick_params(
         axis="y",
-        colors="#9ca3af"
+        colors="#858d9c"
     )
 
     for spine in ax.spines.values():
@@ -436,7 +509,7 @@ def show_feature_importance():
 
 
 # ============================================================
-# AUDIO ANALYSIS
+# AUDIO PREDICTION
 # ============================================================
 
 def predict_audio(
@@ -448,7 +521,7 @@ def predict_audio(
     if not model_loaded:
 
         st.error(
-            "The detection model is unavailable."
+            "Detection model is unavailable."
         )
 
         return
@@ -468,14 +541,14 @@ def predict_audio(
         duration = len(audio) / sr
 
         # ----------------------------------------------------
-        # BASIC VALIDATION
+        # AUDIO VALIDATION
         # ----------------------------------------------------
 
         if duration < 0.5:
 
             st.warning(
-                "⚠️ Audio is too short. Please provide at least "
-                "0.5 seconds of speech."
+                "⚠️ Audio is too short. "
+                "Please provide at least 0.5 seconds of speech."
             )
 
             return
@@ -510,7 +583,7 @@ def predict_audio(
             quality = "High"
 
         # ----------------------------------------------------
-        # MFCC EXTRACTION
+        # MFCC FEATURE EXTRACTION
         # ----------------------------------------------------
 
         mfcc = librosa.feature.mfcc(
@@ -525,14 +598,17 @@ def predict_audio(
         ).reshape(1, -1)
 
         # ----------------------------------------------------
-        # PREDICTION
+        # MODEL PREDICTION
         # ----------------------------------------------------
 
         pred = model.predict(
             mfcc_mean
         )[0]
 
-        if hasattr(model, "predict_proba"):
+        if hasattr(
+            model,
+            "predict_proba"
+        ):
 
             probabilities = model.predict_proba(
                 mfcc_mean
@@ -563,8 +639,8 @@ def predict_audio(
             result_label = "Real Voice"
 
             st.success(
-                f"✅ Real Voice — Confidence: "
-                f"{confidence * 100:.1f}%"
+                f"✅ Real Voice  •  "
+                f"Confidence: {confidence * 100:.1f}%"
             )
 
         else:
@@ -572,8 +648,8 @@ def predict_audio(
             result_label = "AI-Cloned Voice"
 
             st.error(
-                f"⚠️ AI-Cloned Voice Detected — Confidence: "
-                f"{confidence * 100:.1f}%"
+                f"⚠️ AI-Cloned Voice Detected  •  "
+                f"Confidence: {confidence * 100:.1f}%"
             )
 
         st.progress(
@@ -584,7 +660,7 @@ def predict_audio(
         )
 
         # ----------------------------------------------------
-        # AUDIO INFORMATION
+        # AUDIO DETAILS
         # ----------------------------------------------------
 
         if show_audio:
@@ -595,21 +671,24 @@ def predict_audio(
                 load_path
             )
 
-            a1, a2, a3 = st.columns(3)
+            info1, info2, info3 = st.columns(3)
 
-            with a1:
+            with info1:
+
                 st.metric(
                     "Duration",
                     f"{duration:.1f} sec"
                 )
 
-            with a2:
+            with info2:
+
                 st.metric(
                     "Sample Rate",
                     f"{sr / 1000:.0f} kHz"
                 )
 
-            with a3:
+            with info3:
+
                 st.metric(
                     "Signal Quality",
                     quality
@@ -641,17 +720,18 @@ def predict_audio(
             ):
 
                 st.write(
-                    "The model analyzes 13 Mel-Frequency Cepstral "
-                    "Coefficients (MFCCs) extracted from the speech "
-                    "signal. These features capture characteristics "
-                    "of the voice that help the classifier distinguish "
-                    "between real and AI-generated speech."
+                    "The detector extracts 13 "
+                    "Mel-Frequency Cepstral Coefficients "
+                    "(MFCCs) from the audio signal. "
+                    "These acoustic features are summarized "
+                    "and passed to the trained machine-learning "
+                    "classifier for prediction."
                 )
 
                 show_feature_importance()
 
         # ----------------------------------------------------
-        # HISTORY
+        # SAVE HISTORY
         # ----------------------------------------------------
 
         st.session_state.history.append(
@@ -681,7 +761,7 @@ def predict_audio(
 st.subheader("Analyze an audio sample")
 
 st.caption(
-    "Choose a sample, record directly from your microphone, "
+    "Test a known sample, record directly from your microphone, "
     "or upload an audio file."
 )
 
@@ -706,7 +786,7 @@ tab1, tab2, tab3 = st.tabs(
 with tab1:
 
     st.write(
-        "Test the detector using the built-in demonstration samples."
+        "Use the prepared samples to demonstrate the detector."
     )
 
     col1, col2 = st.columns(2)
@@ -714,7 +794,7 @@ with tab1:
     with col1:
 
         if st.button(
-            "▶  Test Sample: Real Voice",
+            "Test Sample: Real Voice",
             key="real_sample"
         ):
 
@@ -730,13 +810,13 @@ with tab1:
             else:
 
                 st.error(
-                    "sample_real.flac not found in the repository."
+                    "sample_real.flac not found."
                 )
 
     with col2:
 
         if st.button(
-            "▶  Test Sample: AI-Cloned Voice",
+            "Test Sample: AI-Cloned Voice",
             key="fake_sample"
         ):
 
@@ -752,12 +832,12 @@ with tab1:
             else:
 
                 st.error(
-                    "sample_fake.flac not found in the repository."
+                    "sample_fake.flac not found."
                 )
 
 
 # ============================================================
-# LIVE RECORD
+# LIVE MICROPHONE
 # ============================================================
 
 with tab2:
@@ -767,7 +847,8 @@ with tab2:
     )
 
     st.caption(
-        "Recommended: 3–10 seconds of clear speech in a quiet environment."
+        "Recommended: 3–10 seconds of clear speech "
+        "in a quiet environment."
     )
 
     mic_input = st.audio_input(
@@ -799,7 +880,7 @@ with tab2:
 
 
 # ============================================================
-# UPLOAD
+# UPLOAD AUDIO
 # ============================================================
 
 with tab3:
@@ -852,7 +933,9 @@ if st.session_state.history:
 
     st.divider()
 
-    st.subheader("📜 Prediction History")
+    st.subheader(
+        "📜 Prediction History"
+    )
 
     st.caption(
         "Results generated during the current session."
