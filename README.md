@@ -150,7 +150,17 @@ See [submission/DEMO.md](submission/DEMO.md) for the demo video link.
 
 ## 10. Screenshots
 
-Application screenshots are available in [assets/screenshots/](assets/screenshots/).
+### Application Homepage
+![Homepage](assets/screenshots/homepage.png)
+
+### Audio Waveform Visualization
+![Waveform View](assets/screenshots/waveform-view.png)
+
+### Audio Spectrogram Visualization
+![Spectrogram View](assets/screenshots/spectrogram-view.png)
+
+### Model Explainability — MFCC Feature Contribution
+![Feature Importance](assets/screenshots/feature-importance.png)
 
 ---
 
