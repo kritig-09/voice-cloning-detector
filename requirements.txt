@@ -1,6 +1,8 @@
 streamlit
+streamlit-webrtc
 librosa
 numpy
 joblib
-scikit-learn
 matplotlib
+scikit-learn
+av
