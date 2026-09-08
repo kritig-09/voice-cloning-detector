@@ -4,8 +4,8 @@ import librosa.display
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
-import tempfile
 import os
+import tempfile
 
 
 # ============================================================
@@ -15,120 +15,214 @@ import os
 st.set_page_config(
     page_title="AI Voice Cloning Detector",
     page_icon="🎙️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 
 # ============================================================
-# DARK THEME / CLEAN UI
+# CUSTOM CSS
 # ============================================================
 
-st.markdown("""
-<style>
+st.markdown(
+    """
+    <style>
 
-.stApp {
-    background-color: #0b0d11;
-}
+    /* ---------- MAIN APP ---------- */
 
-.block-container {
-    max-width: 1200px;
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-}
+    .stApp {
+        background: #0b0d11;
+        color: #e5e7eb;
+    }
 
-/* Main text */
-h1, h2, h3 {
-    color: #f5f7fb !important;
-}
+    .block-container {
+        max-width: 1250px;
+        padding-top: 2.5rem;
+        padding-bottom: 4rem;
+    }
 
-p, label {
-    color: #c5cad3 !important;
-}
 
-/* Metrics */
-[data-testid="stMetric"] {
-    background-color: #12151c;
-    border: 1px solid #282d38;
-    padding: 20px;
-    border-radius: 14px;
-}
+    /* ---------- HEADINGS ---------- */
 
-[data-testid="stMetricValue"] {
-    color: #f5f7fb !important;
-    font-weight: 700;
-}
+    h1 {
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 2.6rem !important;
+        font-weight: 750 !important;
+        letter-spacing: -0.04em !important;
+        color: #f8fafc !important;
+    }
 
-[data-testid="stMetricLabel"] {
-    color: #9299a8 !important;
-}
+    h2 {
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-weight: 700 !important;
+        color: #f8fafc !important;
+    }
 
-/* Buttons */
-.stButton > button {
-    width: 100%;
-    border-radius: 10px;
-    min-height: 46px;
-    background-color: #171b24;
-    color: #f5f7fb;
-    border: 1px solid #343a48;
-    font-weight: 600;
-}
+    h3 {
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-weight: 650 !important;
+        color: #f1f5f9 !important;
+    }
 
-.stButton > button:hover {
-    border-color: #6366f1;
-    color: white;
-    background-color: #1c2030;
-}
+    p {
+        color: #a8afbd !important;
+    }
 
-/* Tabs */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 5px;
-    background-color: #10131a;
-    padding: 5px;
-    border-radius: 12px;
-}
 
-.stTabs [data-baseweb="tab"] {
-    color: #9ca3af;
-    font-weight: 600;
-    border-radius: 8px;
-}
+    /* ---------- TOP TITLE ---------- */
 
-.stTabs [aria-selected="true"] {
-    color: white !important;
-    background-color: #1b1f2b !important;
-}
+    .app-subtitle {
+        color: #8f97a6;
+        font-size: 1.05rem;
+        margin-top: -12px;
+        margin-bottom: 28px;
+        letter-spacing: 0.01em;
+    }
 
-/* File uploader */
-[data-testid="stFileUploader"] {
-    background-color: #12151c;
-    border: 1px dashed #3a4050;
-    border-radius: 12px;
-}
 
-/* Expanders */
-[data-testid="stExpander"] {
-    background-color: #11141a;
-    border: 1px solid #282d38;
-    border-radius: 12px;
-}
+    /* ---------- STATUS ---------- */
 
-/* Divider */
-hr {
-    border-color: #242832 !important;
-}
+    .status-line {
+        display: inline-block;
+        padding: 7px 13px;
+        border: 1px solid #26352d;
+        border-radius: 999px;
+        background: #101713;
+        color: #8fd5a8;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 22px;
+    }
 
-/* Success / error boxes */
-[data-testid="stAlert"] {
-    border-radius: 12px;
-}
 
-/* Audio */
-audio {
-    width: 100%;
-}
+    /* ---------- METRIC CARDS ---------- */
 
-</style>
-""", unsafe_allow_html=True)
+    [data-testid="stMetric"] {
+        background: #13161d;
+        border: 1px solid #272c36;
+        border-radius: 16px;
+        padding: 21px 24px;
+        min-height: 105px;
+    }
+
+    [data-testid="stMetric"]:hover {
+        border-color: #3a4050;
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: #8f97a6 !important;
+        font-size: 0.78rem !important;
+        font-weight: 650 !important;
+        letter-spacing: 0.08em !important;
+    }
+
+    [data-testid="stMetricValue"] {
+        color: #f4f6fa !important;
+        font-size: 1.9rem !important;
+        font-weight: 750 !important;
+    }
+
+
+    /* ---------- DIVIDERS ---------- */
+
+    hr {
+        border-color: #232832 !important;
+        margin-top: 28px !important;
+        margin-bottom: 28px !important;
+    }
+
+
+    /* ---------- TABS ---------- */
+
+    .stTabs [data-baseweb="tab-list"] {
+        background: #11141a;
+        border: 1px solid #242934;
+        border-radius: 12px;
+        padding: 4px;
+        gap: 3px;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        color: #9199a8 !important;
+        font-weight: 600 !important;
+        border-radius: 9px;
+        padding: 10px 20px;
+    }
+
+    .stTabs [aria-selected="true"] {
+        background: #1b1f28 !important;
+        color: #f5f7fb !important;
+    }
+
+
+    /* ---------- BUTTONS ---------- */
+
+    .stButton > button {
+        width: 100%;
+        min-height: 46px;
+        border-radius: 10px;
+        background: #181c24;
+        border: 1px solid #343a47;
+        color: #f1f5f9;
+        font-size: 0.94rem;
+        font-weight: 600;
+        transition: all 0.15s ease;
+    }
+
+    .stButton > button:hover {
+        background: #202531;
+        border-color: #6366f1;
+        color: #ffffff;
+    }
+
+
+    /* ---------- FILE UPLOADER ---------- */
+
+    [data-testid="stFileUploader"] {
+        background: #11141a;
+        border: 1px dashed #3b4250;
+        border-radius: 14px;
+        padding: 8px;
+    }
+
+
+    /* ---------- AUDIO ---------- */
+
+    audio {
+        width: 100%;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+
+
+    /* ---------- EXPANDERS ---------- */
+
+    [data-testid="stExpander"] {
+        background: #11141a;
+        border: 1px solid #272c36;
+        border-radius: 12px;
+    }
+
+
+    /* ---------- ALERTS ---------- */
+
+    [data-testid="stAlert"] {
+        border-radius: 12px;
+    }
+
+
+    /* ---------- TABLE ---------- */
+
+    [data-testid="stDataFrame"] {
+        border: 1px solid #272c36;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
@@ -157,21 +251,24 @@ if "history" not in st.session_state:
 
 st.title("🎙️ AI Voice Cloning Detector")
 
-st.caption(
-    "Real-time detection of AI-generated (cloned) voices vs real human speech"
+st.markdown(
+    '<div class="app-subtitle">'
+    'Real-time detection of AI-generated (cloned) voices vs real human speech'
+    '</div>',
+    unsafe_allow_html=True
 )
 
 if model_loaded:
-    st.success("● Detection engine ready for analysis")
+    st.markdown(
+        '<div class="status-line">● Detection engine online</div>',
+        unsafe_allow_html=True
+    )
 else:
-    st.error("Model could not be loaded. Check voice_cloning_model.pkl")
-
-
-st.write("")
+    st.error("Detection model could not be loaded.")
 
 
 # ============================================================
-# PROJECT METRICS
+# TOP METRICS
 # ============================================================
 
 col1, col2, col3 = st.columns(3)
@@ -190,7 +287,7 @@ with col2:
 
 with col3:
     st.metric(
-        label="MFCC FEATURES",
+        label="MFCC FEATURES USED",
         value="13"
     )
 
@@ -204,7 +301,9 @@ st.divider()
 
 def show_spectrogram(audio, sr, filename):
 
-    fig, ax = plt.subplots(figsize=(9, 3.2))
+    fig, ax = plt.subplots(
+        figsize=(9, 3.5)
+    )
 
     fig.patch.set_facecolor("#0b0d11")
     ax.set_facecolor("#0b0d11")
@@ -225,8 +324,9 @@ def show_spectrogram(audio, sr, filename):
 
     ax.set_title(
         f"Spectrogram — {filename}",
-        color="#e5e7eb",
-        fontsize=12
+        color="#dce1e8",
+        fontsize=12,
+        pad=10
     )
 
     ax.set_xlabel(
@@ -244,7 +344,7 @@ def show_spectrogram(audio, sr, filename):
     )
 
     for spine in ax.spines.values():
-        spine.set_color("#30343e")
+        spine.set_color("#303540")
 
     cbar = fig.colorbar(
         img,
@@ -267,7 +367,7 @@ def show_spectrogram(audio, sr, filename):
 
 
 # ============================================================
-# MFCC EXPLANATION
+# MFCC FEATURE IMPORTANCE
 # ============================================================
 
 def show_feature_importance():
@@ -288,7 +388,7 @@ def show_feature_importance():
     ]
 
     fig, ax = plt.subplots(
-        figsize=(9, 3)
+        figsize=(9, 3.2)
     )
 
     fig.patch.set_facecolor("#0b0d11")
@@ -301,8 +401,9 @@ def show_feature_importance():
 
     ax.set_title(
         "MFCC Feature Contribution",
-        color="#e5e7eb",
-        fontsize=12
+        color="#dce1e8",
+        fontsize=12,
+        pad=10
     )
 
     ax.set_ylabel(
@@ -311,18 +412,18 @@ def show_feature_importance():
     )
 
     ax.tick_params(
-        colors="#9ca3af",
         axis="x",
+        colors="#9ca3af",
         rotation=35
     )
 
     ax.tick_params(
-        colors="#9ca3af",
-        axis="y"
+        axis="y",
+        colors="#9ca3af"
     )
 
     for spine in ax.spines.values():
-        spine.set_color("#30343e")
+        spine.set_color("#303540")
 
     plt.tight_layout()
 
@@ -333,19 +434,15 @@ def show_feature_importance():
 
     plt.close(fig)
 
-    st.caption(
-        "Higher values indicate features that contributed more "
-        "to the model's classification."
-    )
-
 
 # ============================================================
 # AUDIO ANALYSIS
 # ============================================================
 
-def analyze_audio(
-    file_path,
-    display_name
+def predict_audio(
+    load_path,
+    display_name,
+    show_audio=True
 ):
 
     if not model_loaded:
@@ -363,7 +460,7 @@ def analyze_audio(
         # ----------------------------------------------------
 
         audio, sr = librosa.load(
-            file_path,
+            load_path,
             sr=16000,
             mono=True
         )
@@ -371,13 +468,13 @@ def analyze_audio(
         duration = len(audio) / sr
 
         # ----------------------------------------------------
-        # VALIDATION
+        # BASIC VALIDATION
         # ----------------------------------------------------
 
         if duration < 0.5:
 
             st.warning(
-                "Audio is too short. Please provide at least "
+                "⚠️ Audio is too short. Please provide at least "
                 "0.5 seconds of speech."
             )
 
@@ -390,7 +487,7 @@ def analyze_audio(
         if peak < 0.01:
 
             st.warning(
-                "Audio appears silent or has extremely low volume."
+                "⚠️ Audio appears silent or has extremely low volume."
             )
 
             return
@@ -413,7 +510,7 @@ def analyze_audio(
             quality = "High"
 
         # ----------------------------------------------------
-        # MFCC FEATURE EXTRACTION
+        # MFCC EXTRACTION
         # ----------------------------------------------------
 
         mfcc = librosa.feature.mfcc(
@@ -428,10 +525,10 @@ def analyze_audio(
         ).reshape(1, -1)
 
         # ----------------------------------------------------
-        # MODEL PREDICTION
+        # PREDICTION
         # ----------------------------------------------------
 
-        prediction = model.predict(
+        pred = model.predict(
             mfcc_mean
         )[0]
 
@@ -441,11 +538,7 @@ def analyze_audio(
                 mfcc_mean
             )[0]
 
-            # Existing model convention:
-            # 1 = Real Voice
-            # 0 = AI-Cloned Voice
-
-            if prediction == 1:
+            if pred == 1:
 
                 confidence = float(
                     probabilities[1]
@@ -465,21 +558,22 @@ def analyze_audio(
         # RESULT
         # ----------------------------------------------------
 
-        if prediction == 1:
+        if pred == 1:
 
-            result = "Real Voice"
+            result_label = "Real Voice"
 
             st.success(
-                f"✅ REAL VOICE — Confidence: {confidence * 100:.1f}%"
+                f"✅ Real Voice — Confidence: "
+                f"{confidence * 100:.1f}%"
             )
 
         else:
 
-            result = "AI-Cloned Voice"
+            result_label = "AI-Cloned Voice"
 
             st.error(
-                f"⚠️ AI-CLONED VOICE DETECTED — "
-                f"Confidence: {confidence * 100:.1f}%"
+                f"⚠️ AI-Cloned Voice Detected — Confidence: "
+                f"{confidence * 100:.1f}%"
             )
 
         st.progress(
@@ -489,84 +583,81 @@ def analyze_audio(
             )
         )
 
-        st.write("")
-
         # ----------------------------------------------------
-        # AUDIO
+        # AUDIO INFORMATION
         # ----------------------------------------------------
 
-        st.subheader("Audio Analysis")
+        if show_audio:
 
-        st.audio(
-            file_path
-        )
+            st.subheader("Audio Analysis")
 
-        a1, a2, a3 = st.columns(3)
-
-        with a1:
-
-            st.metric(
-                "Duration",
-                f"{duration:.1f} sec"
+            st.audio(
+                load_path
             )
 
-        with a2:
+            a1, a2, a3 = st.columns(3)
 
-            st.metric(
-                "Sample Rate",
-                f"{sr / 1000:.0f} kHz"
-            )
+            with a1:
+                st.metric(
+                    "Duration",
+                    f"{duration:.1f} sec"
+                )
 
-        with a3:
+            with a2:
+                st.metric(
+                    "Sample Rate",
+                    f"{sr / 1000:.0f} kHz"
+                )
 
-            st.metric(
-                "Signal Quality",
-                quality
-            )
+            with a3:
+                st.metric(
+                    "Signal Quality",
+                    quality
+                )
 
-        st.write("")
+            st.write("")
+
+            # ------------------------------------------------
+            # SPECTROGRAM
+            # ------------------------------------------------
+
+            with st.expander(
+                "🎧 View Spectrogram",
+                expanded=True
+            ):
+
+                show_spectrogram(
+                    audio,
+                    sr,
+                    display_name
+                )
+
+            # ------------------------------------------------
+            # EXPLAINABILITY
+            # ------------------------------------------------
+
+            with st.expander(
+                "🔍 Why this decision?"
+            ):
+
+                st.write(
+                    "The model analyzes 13 Mel-Frequency Cepstral "
+                    "Coefficients (MFCCs) extracted from the speech "
+                    "signal. These features capture characteristics "
+                    "of the voice that help the classifier distinguish "
+                    "between real and AI-generated speech."
+                )
+
+                show_feature_importance()
 
         # ----------------------------------------------------
-        # SPECTROGRAM
-        # ----------------------------------------------------
-
-        with st.expander(
-            "🎧 View Audio Spectrogram",
-            expanded=True
-        ):
-
-            show_spectrogram(
-                audio,
-                sr,
-                display_name
-            )
-
-        # ----------------------------------------------------
-        # EXPLAINABILITY
-        # ----------------------------------------------------
-
-        with st.expander(
-            "🔍 Why did the model make this decision?"
-        ):
-
-            st.write(
-                "The detector extracts 13 Mel-Frequency "
-                "Cepstral Coefficients (MFCCs) from the audio. "
-                "These features represent characteristics of "
-                "the speech signal and are passed to the "
-                "machine-learning classifier."
-            )
-
-            show_feature_importance()
-
-        # ----------------------------------------------------
-        # SAVE HISTORY
+        # HISTORY
         # ----------------------------------------------------
 
         st.session_state.history.append(
             {
-                "File": display_name,
-                "Result": result,
+                "Filename": display_name,
+                "Result": result_label,
                 "Confidence": f"{confidence * 100:.1f}%",
                 "Duration": f"{duration:.1f} sec"
             }
@@ -575,7 +666,7 @@ def analyze_audio(
     except Exception as e:
 
         st.error(
-            "Unable to process this audio file."
+            f"❌ Unable to process {display_name}."
         )
 
         st.caption(
@@ -584,15 +675,20 @@ def analyze_audio(
 
 
 # ============================================================
-# ANALYSIS TABS
+# ANALYSIS SECTION
 # ============================================================
 
 st.subheader("Analyze an audio sample")
 
 st.caption(
-    "Test a known sample, record a voice, or upload your own audio."
+    "Choose a sample, record directly from your microphone, "
+    "or upload an audio file."
 )
 
+
+# ============================================================
+# TABS
+# ============================================================
 
 tab1, tab2, tab3 = st.tabs(
     [
@@ -610,53 +706,53 @@ tab1, tab2, tab3 = st.tabs(
 with tab1:
 
     st.write(
-        "Use the prepared samples to demonstrate the detector."
+        "Test the detector using the built-in demonstration samples."
     )
 
-    c1, c2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-    with c1:
+    with col1:
 
         if st.button(
-            "▶ Test Real Human Voice",
-            key="real_voice_button"
+            "▶  Test Sample: Real Voice",
+            key="real_sample"
         ):
 
             if os.path.exists(
                 "sample_real.flac"
             ):
 
-                analyze_audio(
+                predict_audio(
                     "sample_real.flac",
-                    "Real Human Voice"
+                    "sample_real.flac"
                 )
 
             else:
 
                 st.error(
-                    "sample_real.flac not found."
+                    "sample_real.flac not found in the repository."
                 )
 
-    with c2:
+    with col2:
 
         if st.button(
-            "▶ Test AI-Cloned Voice",
-            key="ai_voice_button"
+            "▶  Test Sample: AI-Cloned Voice",
+            key="fake_sample"
         ):
 
             if os.path.exists(
                 "sample_fake.flac"
             ):
 
-                analyze_audio(
+                predict_audio(
                     "sample_fake.flac",
-                    "AI-Cloned Voice"
+                    "sample_fake.flac"
                 )
 
             else:
 
                 st.error(
-                    "sample_fake.flac not found."
+                    "sample_fake.flac not found in the repository."
                 )
 
 
@@ -671,8 +767,7 @@ with tab2:
     )
 
     st.caption(
-        "For best results, speak clearly for 3–10 seconds "
-        "in a quiet environment."
+        "Recommended: 3–10 seconds of clear speech in a quiet environment."
     )
 
     mic_input = st.audio_input(
@@ -692,9 +787,9 @@ with tab2:
 
             temp_path = temp.name
 
-        analyze_audio(
+        predict_audio(
             temp_path,
-            "Live Microphone Recording"
+            "Microphone Recording"
         )
 
         try:
@@ -704,13 +799,13 @@ with tab2:
 
 
 # ============================================================
-# UPLOAD AUDIO
+# UPLOAD
 # ============================================================
 
 with tab3:
 
     st.write(
-        "Upload WAV or FLAC audio for detection."
+        "Upload WAV or FLAC audio for analysis."
     )
 
     uploaded_files = st.file_uploader(
@@ -738,7 +833,7 @@ with tab3:
 
                 temp_path = temp.name
 
-            analyze_audio(
+            predict_audio(
                 temp_path,
                 uploaded_file.name
             )
@@ -750,19 +845,17 @@ with tab3:
 
 
 # ============================================================
-# HISTORY
+# PREDICTION HISTORY
 # ============================================================
 
 if st.session_state.history:
 
     st.divider()
 
-    st.subheader(
-        "📜 Prediction History"
-    )
+    st.subheader("📜 Prediction History")
 
     st.caption(
-        "Predictions generated during this session."
+        "Results generated during the current session."
     )
 
     st.dataframe(
@@ -772,7 +865,8 @@ if st.session_state.history:
     )
 
     if st.button(
-        "Clear History"
+        "Clear Prediction History",
+        key="clear_history"
     ):
 
         st.session_state.history = []
@@ -787,5 +881,5 @@ if st.session_state.history:
 st.divider()
 
 st.caption(
-    "AI Voice Cloning Detector • Machine Learning Audio Analysis"
+    "AI Voice Cloning Detector  •  Machine Learning Audio Analysis"
 )
