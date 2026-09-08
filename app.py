@@ -1,4 +1,3 @@
-%%writefile app.py
 import streamlit as st
 import librosa
 import librosa.display
@@ -7,7 +6,6 @@ import joblib
 import matplotlib.pyplot as plt
 import matplotlib
 import os
-
 matplotlib.rcParams.update({
     'figure.facecolor': '#0f1115',
     'axes.facecolor': '#0f1115',
@@ -17,13 +15,10 @@ matplotlib.rcParams.update({
     'xtick.color': '#9ca3af',
     'ytick.color': '#9ca3af',
 })
-
 st.set_page_config(page_title="Voice Cloning Detector", page_icon="🎙️", layout="wide")
-
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
